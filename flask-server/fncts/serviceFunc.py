@@ -7,10 +7,9 @@ import urllib.request
 
 from xml.dom import minidom
 from datetime import date, datetime
-from bdConfig import gSheet_id, table_name
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
-from bdConfig import delayUpdate
+from fncts.bdConfig import *
 
 
 
@@ -94,22 +93,22 @@ def checkDeliveryDate(delDate, idOfDelivery, numOfDelivery):
     newDate=datetime.strptime(delDate,'%d.%m.%Y')
     nowDate=datetime.strptime(str(date.today()),'%Y-%m-%d')
     if newDate<nowDate:
-        print("Срок поставки прошел у заказа с номером " + numOfDelivery+" (ID: "+idOfDelivery+"). Указанная дата поставки:"+ delDate)
+        #print("Срок поставки прошел у заказа с номером " + numOfDelivery+" (ID: "+idOfDelivery+"). Указанная дата поставки:"+ delDate)
         return
 
 
 def getSheet(sheet, connection):
-        #Получение таблицы из Google Sheets
-        res = sheet.values().get(spreadsheetId=gSheet_id, range="Лист1!A2:D999").execute()
+            #Получение таблицы из Google Sheets
+            res = sheet.values().get(spreadsheetId=gSheet_id, range="Лист1!A2:D999").execute()
 
-        #Очистка таблицы
-        clearTable(connection)
+            #Очистка таблицы
+            clearTable(connection)
 
-        #Заполнение таблицы
-        updateTable(res, connection)
+            #Заполнение таблицы
+            updateTable(res, connection)
 
-        #Задержка между выполнением
-        time.sleep(delayUpdate)
-
-        #Повторный запуск функции
-        threading.Timer(60.0, getSheet(sheet, connection)).start()
+            #Задержка между выполнением
+            time.sleep(delayUpdate)
+            
+            #Повторный запуск функции
+            threading.Timer(60.0, getSheet(sheet, connection)).start()
