@@ -1,10 +1,11 @@
-import React, {useState,useEffect} from 'react'
+import React, {useState,useEffect, Component} from 'react'
 import "./App.css"
 import axios from "axios";
-
+import StartStopButtons from './StartStopButtons';
 
 
 function App() {
+  
   const [data, setData] = useState([{}])
   const [dataExec,setDataExec] = useState([{}])
   const titles=["Database address:","Database user:","Database name:","Database table:","GoogleSheet ID:", "Update delay (sec):"]
@@ -18,44 +19,25 @@ function App() {
       }
     )
   }, [])
-  function startScript(){
-    axios({
-      method: "GET",
-      url:"/startscript",
-    })
-    .then((response) => {
-      const res =response.data
-      setDataExec(({
-        profile_name: res.about}))
-    }).catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-        }
-    })
-    }
-    function stopScript(){
-      axios({
-        method: "GET",
-        url:"/stopscript",
-      })
-      .then((response) => {
-        const res =response.data
-        setDataExec(({
-          profile_name: res.about}))
-      }).catch((error) => {
-        if (error.response) {
-          console.log(error.response)
-          console.log(error.response.status)
-          console.log(error.response.headers)
+
+      const [param,setParam] = useState([{}])
+      useEffect(()=>{
+        fetch("/param").then(
+          res=>res.json()
+        ).then(
+          data=>{
+            setParam(data)
+            console.log(data)
           }
-      })
-      }
+        )
+      }, [])
+      const isActive2=param.params==0
+
   return (
     <div >
-      <div className='title-text'>
-        <a>NUMBERS</a>
+      <div>
+        <a className='title-text'>NUMBERS<a className='submain2-text'> TEST TASK</a><a className='submain3-text'> made by andrey petrov</a></a>
+        
       </div>
       <div className='screen-container'>
         <div>
@@ -65,15 +47,12 @@ function App() {
           : (data.configures.map((config, i)=>(<div key={i} className="mgBTM10"><a className='main-text'>{titles[i]}</a> <a className='submain-text'>{config}</a></div>)))}
         </div>
         <div className='mgBTM20'>
-          <a className='title2-text'>EXECUTION:</a>
-          <div className='mgBTM10'><button className='script-text' onClick={startScript}>Run</button> <button className='script-text active' onClick={stopScript}>Stop</button></div>
-          <div> <a className='main-text'>Execution status: </a>
-                {dataExec && <div> 
-                  <a className='submain-text'>{dataExec.profile_name}</a>
-                </div> } 
-          </div>
+          <a className='title2-text'>EXECUTION: </a>
+          <div className=''><StartStopButtons title="Run" runned={param.params} runX="1"/> <StartStopButtons title="Stop" runned={param.params}  runX="0"/>  </div>
         </div>
+        
       </div>
+
     </div>
   )
 }

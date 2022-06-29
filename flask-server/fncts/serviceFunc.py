@@ -107,8 +107,5 @@ def getSheet(sheet, connection):
             #Заполнение таблицы
             updateTable(res, connection)
 
-            #Задержка между выполнением
-            time.sleep(delayUpdate)
-            
-            #Повторный запуск функции
-            threading.Timer(60.0, getSheet(sheet, connection)).start()
+           
+

@@ -21,15 +21,14 @@ def main():
         #Создание таблицы, при её отсутсвии
         createTable(connection)
         #Внесение изменений в БД
-        getSheet(sheet, connection)
+        while x==True:
+            getSheet(sheet, connection)
             
     except:
-        stop_threads=False
         return("Error when working with the table")
     finally:
         if connection:
             connection.close()
-            stop_threads=False
             return("PostgreSQL connection closed")
     
 if __name__ == '__main__':
