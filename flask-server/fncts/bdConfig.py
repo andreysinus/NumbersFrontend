@@ -11,5 +11,4 @@ table_name="TestTable"
 gSheet_id= "1SpznG225ttDbGRtLA3abzAusSkx0peQZTtHTaMgFudE"
 
 #Задержка в секундах между обновлениями таблицы в БД (желательно не меньше 5 секунд)
-delayUpdate=5
-
+delayUpdate=60

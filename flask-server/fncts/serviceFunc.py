@@ -1,3 +1,4 @@
+from cgitb import text
 import os
 import threading
 import time
@@ -10,8 +11,9 @@ from datetime import date, datetime
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 from fncts.bdConfig import *
+from fncts.sendMSG import sendMessage
 
-
+textSMS=""
 
 cbrfURL="https://www.cbr.ru/scripts/XML_daily.asp?"
 
@@ -76,6 +78,8 @@ def get_dollar():
 
 def updateTable(res, connection):
     #Получение курса доллара
+    global textSMS
+    textSMS=""
     usdCurrency = get_dollar()
     val = res.get('values', [])
     for rows in val:
@@ -88,12 +92,14 @@ def updateTable(res, connection):
                 INSERT INTO {table_name.lower()} VALUES ({rows[0]}, {rows[1]}, {rows[2]} ,{rubVal}, '{rows[3]}') 
                 """)
             connection.commit()
+    sendMessage(textSMS)
 
 def checkDeliveryDate(delDate, idOfDelivery, numOfDelivery):
+    global textSMS
     newDate=datetime.strptime(delDate,'%d.%m.%Y')
     nowDate=datetime.strptime(str(date.today()),'%Y-%m-%d')
     if newDate<nowDate:
-        #print("Срок поставки прошел у заказа с номером " + numOfDelivery+" (ID: "+idOfDelivery+"). Указанная дата поставки:"+ delDate)
+        textSMS=textSMS+"Прошел срок поставки у заказа №" + numOfDelivery+" (ID: "+idOfDelivery+")\n"
         return
 
 
